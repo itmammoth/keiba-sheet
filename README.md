@@ -14,3 +14,15 @@ docker compose up
 ```bash
 docker compose exec playwright python hello.py
 ```
+
+# 使用方法
+
+## netkeibaから出馬表を作る
+
+こんな感じで。CSV形式で標準出力に吐かれるのでリダイレクトするなりなんなりと。
+
+```bash
+docker compose exec playwright python netkeiba.py <race_id>
+# 例：2025年皐月賞
+# docker compose exec playwright python netkeiba.py 202506030811
+```

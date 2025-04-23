@@ -4,5 +4,5 @@ with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.new_page()
     page.goto("https://www.google.com/")
-    page.screenshot(path="screenshot.png")
+    page.screenshot(path="tmp/screenshot.png")
     browser.close()
