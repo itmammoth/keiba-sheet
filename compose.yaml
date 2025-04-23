@@ -1,0 +1,8 @@
+services:
+  playwright:
+    build:
+      context: ./playwright
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./playwright/app:/usr/src/app
