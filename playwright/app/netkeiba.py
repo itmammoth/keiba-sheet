@@ -19,10 +19,31 @@ def main(race_id: str):
     race_data2 = (
         race_list_name_box.select_one(".RaceData02").text.strip().replace("\n", " ")
     )
-    print(race_name)
-    print(race_data1)
-    print(race_data2)
+    keibajo = race_data2.split(" ")[1]
+    print(f'"{race_name}"')
+    print(f'"{race_data1}"')
+    print(f'"{race_data2}"')
+    print()
 
+    print(
+        ",".join(
+            [
+                "枠番",
+                "馬番",
+                "馬名",
+                "性齢",
+                "斤量",
+                "騎手",
+                "厩舎",
+                "調教師",
+                "馬体重",
+                "オッズ",
+                "人気",
+                "パドック",
+                "メモ",
+            ]
+        )
+    )
     for horse_list in soup.select("table.ShutubaTable tr.HorseList"):
         waku = horse_list.select("td")[0].text.strip()
         number = horse_list.select("td")[1].text.strip()
