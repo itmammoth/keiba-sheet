@@ -67,7 +67,7 @@ def main(race_id: str):
                     age,
                     carrying_weight,
                     jockey,
-                    stable,
+                    stable_disp(stable, keibajo),
                     trainer,
                     horse_weight,
                     odds,
@@ -75,6 +75,15 @@ def main(race_id: str):
                 ]
             )
         )
+
+
+def stable_disp(stable: str, keibajo: str) -> str:
+    if stable == "栗東" and (keibajo == "阪神" or keibajo == "京都"):
+        return "栗東+"
+    elif stable == "美浦" and (keibajo == "東京" or keibajo == "中山"):
+        return "美浦+"
+    else:
+        return stable
 
 
 def get_html(race_id: str) -> str:
