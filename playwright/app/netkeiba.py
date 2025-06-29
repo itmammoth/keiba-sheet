@@ -94,6 +94,7 @@ def get_html(race_id: str) -> str:
             f"https://race.netkeiba.com/race/shutuba.html?race_id={race_id}&rf=shutuba_submenu",
             wait_until="domcontentloaded",
         )
+        page.wait_for_timeout(3 * 1000)
         page.screenshot(path="tmp/netkeiba.png")
         html = page.content()
         browser.close()
