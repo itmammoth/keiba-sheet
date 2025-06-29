@@ -173,5 +173,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+.env
 .DS_Store
 playwright/app/tmp/
+keiba-sheet-py-key.json
