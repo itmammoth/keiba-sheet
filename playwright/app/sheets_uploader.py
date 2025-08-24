@@ -1,4 +1,3 @@
-import os
 from typing import Dict, List
 
 from google.oauth2.service_account import Credentials
@@ -72,7 +71,7 @@ class GoogleSheetsUploader:
         from datetime import datetime
         today = datetime.now().strftime("%Y%m%d")
         sheet_name = f"{today}_{race_info['race_name']}"
-        
+
         actual_sheet_name = self.create_sheet(sheet_name)
 
         # アップロード用のデータを構築
