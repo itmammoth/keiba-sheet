@@ -12,7 +12,7 @@ docker compose up
 任意のファイルを実行する
 
 ```bash
-docker compose exec playwright python hello.py
+docker compose exec playwright uv run hello.py
 ```
 
 # 使用方法

@@ -1,4 +1,3 @@
-import sys
 import argparse
 import os
 from typing import List, Dict
@@ -24,14 +23,14 @@ def get_race_data(race_id: str) -> tuple[Dict[str, str], List[str], List[List[st
         race_list_name_box.select_one(".RaceData02").text.strip().replace("\n", " ")
     )
     keibajo = race_data2.split(" ")[1]
-    
+
     # レース情報を辞書として格納
     race_info = {
         'race_name': race_name,
         'race_data1': race_data1,
         'race_data2': race_data2
     }
-    
+
     # ヘッダー情報
     headers = [
         "枠番",
@@ -48,7 +47,7 @@ def get_race_data(race_id: str) -> tuple[Dict[str, str], List[str], List[List[st
         "パドック",
         "メモ",
     ]
-    
+
     # 馬データを収集
     horses_data = []
     for horse_list in soup.select("table.ShutubaTable tr.HorseList"):
@@ -80,7 +79,7 @@ def get_race_data(race_id: str) -> tuple[Dict[str, str], List[str], List[List[st
             "",  # パドック
             "",  # メモ
         ])
-    
+
     return race_info, headers, horses_data
 
 
@@ -90,7 +89,7 @@ def print_csv(race_info: Dict[str, str], headers: List[str], horses_data: List[L
     print(f'"{race_info["race_data1"]}"')
     print(f'"{race_info["race_data2"]}"')
     print()
-    
+
     print(",".join(headers))
     for horse_data in horses_data:
         print(",".join(horse_data))
@@ -102,7 +101,7 @@ def upload_to_sheets(race_info: Dict[str, str], headers: List[str], horses_data:
     if not spreadsheet_id:
         print("エラー: GOOGLE_SHEETS_SPREADSHEET_IDが設定されていません")
         return
-    
+
     try:
         uploader = GoogleSheetsUploader(spreadsheet_id)
         sheet_name = uploader.upload_race_data(race_info, headers, horses_data)
@@ -116,10 +115,10 @@ def main():
     parser.add_argument('race_id', help='レースID')
     parser.add_argument('--upload', action='store_true', help='Google Sheetsにアップロード')
     args = parser.parse_args()
-    
+
     # データを取得
     race_info, headers, horses_data = get_race_data(args.race_id)
-    
+
     if args.upload:
         upload_to_sheets(race_info, headers, horses_data)
     else:
