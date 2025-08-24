@@ -1,9 +1,8 @@
-FROM python:3.13
+FROM mcr.microsoft.com/playwright/python:v1.54.0-noble
 
 WORKDIR /usr/src/app
 
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt \
-    && playwright install --with-deps chromium
+RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["bash"]
