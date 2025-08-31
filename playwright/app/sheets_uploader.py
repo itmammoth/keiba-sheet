@@ -37,7 +37,7 @@ class GoogleSheetsUploader:
 
         # 新しいシートを作成
         request = {
-            "requests": [{"addSheet": {"properties": {"title": final_sheet_name}}}]
+            "requests": [{"addSheet": {"properties": {"title": final_sheet_name, "index": 0}}}]
         }
 
         self.service.spreadsheets().batchUpdate(
