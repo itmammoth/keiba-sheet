@@ -34,6 +34,7 @@ def get_race_data(race_id: str) -> tuple[Dict[str, str], List[str], List[List[st
     # ヘッダー情報
     headers = [
         "枠番",
+        "印",
         "馬番",
         "馬名",
         "性齢",
@@ -66,6 +67,7 @@ def get_race_data(race_id: str) -> tuple[Dict[str, str], List[str], List[List[st
 
         horses_data.append([
             waku,
+            "", # 印
             number,
             horse_name,
             age,
