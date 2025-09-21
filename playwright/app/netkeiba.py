@@ -1,6 +1,7 @@
 import argparse
 import os
-from typing import List, Dict
+import re
+from typing import Dict, List
 
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
@@ -26,9 +27,9 @@ def get_race_data(race_id: str) -> tuple[Dict[str, str], List[str], List[List[st
 
     # レース情報を辞書として格納
     race_info = {
-        'race_name': race_name,
-        'race_data1': race_data1,
-        'race_data2': race_data2
+        "race_name": race_name,
+        "race_data1": race_data1,
+        "race_data2": race_data2,
     }
 
     # ヘッダー情報
@@ -37,11 +38,13 @@ def get_race_data(race_id: str) -> tuple[Dict[str, str], List[str], List[List[st
         "印",
         "馬番",
         "馬名",
-        "性齢",
+        "性",
+        "齢",
         "斤量",
         "騎手",
         "厩舎",
         "調教師",
+        "仕上がり",
         "馬体重",
         "オッズ",
         "人気",
@@ -49,13 +52,18 @@ def get_race_data(race_id: str) -> tuple[Dict[str, str], List[str], List[List[st
         "メモ",
     ]
 
+    SEX_AGE_RE = re.compile(r"^(?P<sex>[^\d]+)(?P<age>\d+)$")
+
     # 馬データを収集
     horses_data = []
     for horse_list in soup.select("table.ShutubaTable tr.HorseList"):
         waku = horse_list.select("td")[0].text.strip()
         number = horse_list.select("td")[1].text.strip()
         horse_name = horse_list.select("td")[3].text.strip()
-        age = horse_list.select("td")[4].text.strip()
+        sex_and_age = horse_list.select("td")[4].text.strip()
+        m = SEX_AGE_RE.fullmatch(sex_and_age)
+        sex = m.group("sex")
+        age = m.group("age")
         carrying_weight = horse_list.select("td")[5].text.strip()
         jockey = horse_list.select("td")[6].text.strip()
         trainer_info = horse_list.select("td")[7].text.strip()
@@ -65,27 +73,33 @@ def get_race_data(race_id: str) -> tuple[Dict[str, str], List[str], List[List[st
         odds = horse_list.select("td")[9].text.strip()
         popularity = horse_list.select("td")[10].text.strip()
 
-        horses_data.append([
-            waku,
-            "", # 印
-            number,
-            horse_name,
-            age,
-            carrying_weight,
-            jockey,
-            stable_disp(stable, keibajo),
-            trainer,
-            horse_weight,
-            odds,
-            popularity,
-            "",  # パドック
-            "",  # メモ
-        ])
+        horses_data.append(
+            [
+                waku,
+                "",  # 印
+                number,
+                horse_name,
+                sex,
+                age,
+                carrying_weight,
+                jockey,
+                stable_disp(stable, keibajo),
+                trainer,
+                "",  # 仕上がり
+                horse_weight,
+                odds,
+                popularity,
+                "",  # パドック
+                "",  # メモ
+            ]
+        )
 
     return race_info, headers, horses_data
 
 
-def print_csv(race_info: Dict[str, str], headers: List[str], horses_data: List[List[str]]):
+def print_csv(
+    race_info: Dict[str, str], headers: List[str], horses_data: List[List[str]]
+):
     """CSVフォーマットで出力"""
     print(f'"{race_info["race_name"]}"')
     print(f'"{race_info["race_data1"]}"')
@@ -97,9 +111,11 @@ def print_csv(race_info: Dict[str, str], headers: List[str], horses_data: List[L
         print(",".join(horse_data))
 
 
-def upload_to_sheets(race_info: Dict[str, str], headers: List[str], horses_data: List[List[str]]):
+def upload_to_sheets(
+    race_info: Dict[str, str], headers: List[str], horses_data: List[List[str]]
+):
     """Google Sheetsにアップロード"""
-    spreadsheet_id = os.getenv('GOOGLE_SHEETS_SPREADSHEET_ID')
+    spreadsheet_id = os.getenv("GOOGLE_SHEETS_SPREADSHEET_ID")
     if not spreadsheet_id:
         print("エラー: GOOGLE_SHEETS_SPREADSHEET_IDが設定されていません")
         return
@@ -113,9 +129,11 @@ def upload_to_sheets(race_info: Dict[str, str], headers: List[str], horses_data:
 
 
 def main():
-    parser = argparse.ArgumentParser(description='netkeiba競馬データ取得ツール')
-    parser.add_argument('race_id', help='レースID')
-    parser.add_argument('--upload', action='store_true', help='Google Sheetsにアップロード')
+    parser = argparse.ArgumentParser(description="netkeiba競馬データ取得ツール")
+    parser.add_argument("race_id", help="レースID")
+    parser.add_argument(
+        "--upload", action="store_true", help="Google Sheetsにアップロード"
+    )
     args = parser.parse_args()
 
     # データを取得
