@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright/python:v1.54.0-noble
+FROM mcr.microsoft.com/playwright/python:v1.55.0-noble
 
 # uv
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
